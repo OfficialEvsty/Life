@@ -14,6 +14,7 @@ class Life{
     Cell ***m_cells;
     Settings *m_settings;
 
+
     Life(Settings *settings = nullptr);
     int bottom_death_count_condition = 2;
     int top_death_count_condition = 3;

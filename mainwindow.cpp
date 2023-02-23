@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     MainWindow::launcher->Run();
     this->timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(ProceedLogic()));
-    timer->start(1000); // И запустим таймер
+    timer->start(200); // И запустим таймер
 }
 
 void MainWindow::paintEvent(QPaintEvent *event){
