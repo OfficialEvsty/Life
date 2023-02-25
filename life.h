@@ -16,6 +16,7 @@ class Life{
 
 
     Life(Settings *settings = nullptr);
+    Life(Settings *settings, bool flag);
     int bottom_death_count_condition = 2;
     int top_death_count_condition = 3;
     int reviving_cell_condition = 3;

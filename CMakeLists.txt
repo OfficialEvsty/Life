@@ -18,6 +18,8 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
         life.cpp
+        constructor.cpp
+        map.cpp
         launcher.cpp
         settings.cpp
         cell.cpp

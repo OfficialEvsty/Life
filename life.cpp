@@ -37,6 +37,37 @@ Life::Life(Settings *settings){
 
 }
 
+
+Life::Life(Settings *settings, bool flag){
+    this->m_settings = settings;
+    unsigned long long int lengthX = this->m_settings->GetSizeOfField().LengthX;
+    unsigned long long int lengthY = this->m_settings->GetSizeOfField().LengthY;
+    //initializing array of cells by certain length.
+    this->m_cells = new Cell**[lengthX];
+
+    for (int i = 0; i < lengthX; i++)
+        m_cells[i] = new Cell*[lengthY];
+
+    int counter = 3;
+    for (int i = 0; i < lengthX; i++)
+        for (int j = 0; j < lengthY; j++){
+            bool cell_creating_condition = false;
+            m_cells[i][j] = new Cell(0, cell_creating_condition);
+            if (i > (lengthX / 2) && j > (lengthY / 2) && counter){
+                m_cells[i][j]->SetAlive(true);
+                counter--;
+            }
+        }
+
+
+
+    /*for (int i = 0; i < lengthX; i++)
+            for (int j = 0; j < lengthY; j++){
+                std::cout << m_cells[i][j]->GetAlive();
+            }*/
+
+}
+
 void Life::Init(Settings *settings){
     if (!Life::Instance){
         Life::Instance = new Life(settings);
@@ -52,14 +83,6 @@ Settings* Life::GetSettings(){
 }
 
 int Life::GetAliveCellsAround(Cell*** ref, int i, int j){
-    /*Cell *surrounding_cells[] = {ref+1,
-                             ref+length+1,
-                             ref+length,
-                             ref+length-1,
-                             ref-1,
-                             ref-length-1,
-                             ref-length,
-                             ref-length+1};*/
     Point points[] = {
         Point(0, 1),
         Point(0, -1),
@@ -84,12 +107,14 @@ int Life::GetAliveCellsAround(Cell*** ref, int i, int j){
     }
 
     int life_counter = 0;
-    for (int i = counter-1; i > 0; i--){
-        Cell cell = *surrounding_cells[i];
+    for (int k = 0; k < counter; k++){
+        Cell cell = *surrounding_cells[k];
         //std::cout << typeid(surrounding_cells[i]);
         //if (typeid(surrounding_cells[i]) == typeid(Cell)){
-        if (cell.GetAlive())
+        if (cell.GetAlive()){
             life_counter += 1;
+        }
+
         //}
     }
             //qDebug() << ref->GetID();
@@ -118,6 +143,7 @@ void Life::Proceed(){
                 bool is_cell_revived = cells_count == this->reviving_cell_condition;
                 ptr->SetAliveStatusInNextGen(is_cell_revived);
             }
+
         }
     for (int i = 0; i < lenX; i++)
         for (int j = 0; j < lenY; j++){

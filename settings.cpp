@@ -20,8 +20,8 @@ Settings *Settings::Instance = nullptr;
 
 Settings::Settings(unsigned int tick){
     Size size;
-    size.LengthX = 100;
-    size.LengthY = 100;
+    size.LengthX = 240;
+    size.LengthY = 135;
     this->m_size = size;
     this->ui_tick = tick;
 }
