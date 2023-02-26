@@ -8,7 +8,7 @@ Launcher::Launcher()
 
 void Launcher::Run(QTimer *timer){
     Settings::Init(100);
-    Life::Init(Settings::Instance);
+    Life::Init(Settings::Instance, this->GetCtor()->GetMap());
     this->game = Life::Instance;
     timer->start(200);
     this->is_ctor_mode = false;

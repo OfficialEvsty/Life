@@ -3,7 +3,7 @@
 
 Constructor::Constructor(Settings *sett){
     m_settings = sett;
-    map = new Map(m_settings);
+    map = new Map();
 }
 
 void Constructor::Init(Settings *settings){
@@ -12,15 +12,14 @@ void Constructor::Init(Settings *settings){
     }
 }
 
-void Constructor::deletePoint(vector<Point>::iterator iterator){
+void Constructor::deletePoint(int index){
     vector<Point> *points = map->GetPoints();
-    points->erase(iterator);
+    points->erase(points->begin() + index);
 }
 
 void Constructor::addPoint(Point p){
     vector<Point> *points = map->GetPoints();
     points->push_back(p);
-    qDebug() << points->size();
 }
 
 bool Constructor::isPointValid(Point p){
@@ -46,12 +45,10 @@ void Constructor::EditMap(int x, int y){
         return;
 
     vector<Point> *points = map->GetPoints();
-    vector<Point>::iterator point_iterator = points->begin();
     for (int i = 0; i < points->size(); i++){
-        point_iterator++;
-        if (points[i] == p.x && points[i].y == p.y){
-            deletePoint(point_iterator);
-            break;
+        if (points->at(i).x == p.x && points->at(i).y == p.y){
+            deletePoint(i);
+            return;
         }
     }
     addPoint(p);

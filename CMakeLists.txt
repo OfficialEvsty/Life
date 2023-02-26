@@ -20,11 +20,13 @@ set(PROJECT_SOURCES
         life.cpp
         constructor.cpp
         map.cpp
+        map.h
         launcher.cpp
         settings.cpp
         cell.cpp
         life.h
         launcher.h
+        point.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

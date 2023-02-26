@@ -6,12 +6,6 @@
 #include <iostream>
 
 
-//ctor for support entity class point.
-Point::Point(int x, int y){
-    this->x = x;
-    this->y = y;
-}
-
 //life's ctor
 Life::Life(Settings *settings){
     this->m_settings = settings;
@@ -38,7 +32,7 @@ Life::Life(Settings *settings){
 }
 
 
-Life::Life(Settings *settings, bool flag){
+Life::Life(Settings *settings, Map *map){
     this->m_settings = settings;
     unsigned long long int lengthX = this->m_settings->GetSizeOfField().LengthX;
     unsigned long long int lengthY = this->m_settings->GetSizeOfField().LengthY;
@@ -48,18 +42,15 @@ Life::Life(Settings *settings, bool flag){
     for (int i = 0; i < lengthX; i++)
         m_cells[i] = new Cell*[lengthY];
 
-    int counter = 3;
     for (int i = 0; i < lengthX; i++)
         for (int j = 0; j < lengthY; j++){
             bool cell_creating_condition = false;
             m_cells[i][j] = new Cell(0, cell_creating_condition);
-            if (i > (lengthX / 2) && j > (lengthY / 2) && counter){
-                m_cells[i][j]->SetAlive(true);
-                counter--;
+            for (int k = 0; k < map->GetPoints()->size(); k++){
+                if (map->GetPoints()->at(k).x == i && map->GetPoints()->at(k).y == j)
+                    m_cells[i][j]->SetAlive(true);
             }
         }
-
-
 
     /*for (int i = 0; i < lengthX; i++)
             for (int j = 0; j < lengthY; j++){
@@ -68,9 +59,12 @@ Life::Life(Settings *settings, bool flag){
 
 }
 
-void Life::Init(Settings *settings){
+void Life::Init(Settings *settings, Map *map){
     if (!Life::Instance){
-        Life::Instance = new Life(settings);
+        if (map != nullptr)
+            Life::Instance = new Life(settings, map);
+        else
+            Life::Instance = new Life(settings);
     }
 }
 

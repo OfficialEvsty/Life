@@ -20,14 +20,22 @@ MainWindow::MainWindow(QWidget *parent)
     setAutoFillBackground(true);
     setPalette(Pal);
 
-    this->timer = new QTimer();
-    connect(timer, SIGNAL(timeout()), this, SLOT(ProceedLogic()));
+
+    this->windowUpdateTimer = new QTimer();
+    connect(windowUpdateTimer, SIGNAL(timeout()), this, SLOT(windowUpdate()));
+    this->windowUpdateTimer->start(20);
 
     DialogInit();
     launcher = new Launcher();
-    //MainWindow::launcher->Run(timer);
+
     launcher->RunCtor();
     setMouseTracking(true);
+}
+
+void MainWindow::start(){
+    this->timer = new QTimer();
+    connect(timer, SIGNAL(timeout()), this, SLOT(proceedLogic()));
+    MainWindow::launcher->Run(timer);
 }
 
 void MainWindow::DialogInit(){
@@ -37,9 +45,9 @@ void MainWindow::DialogInit(){
     QFont game_font = QFont();
     game_font.setPixelSize(pixelSize);
     //button data
-    QString draw_button_name = "Draw map";
-    int draw_button_width = 200;
-    int draw_button_height = 50;
+    QString start_game_button_name = "Draw map";
+    int start_button_width = 200;
+    int start_button_height = 50;
     //dialog data
     QString dialog_title = "Life Settings";
 
@@ -60,13 +68,15 @@ void MainWindow::DialogInit(){
     game_label->setFont(game_font);
     game_label->show();
 
-    QPushButton *draw_map_button = new QPushButton(group);
-    draw_map_button->setText(draw_button_name);
+    QPushButton *start_game = new QPushButton(group);
+    start_game->setText(start_game_button_name);
 
-    QRect draw_button_size = QRect(dialog->geometry().width()/2 - draw_button_width/2, dialog->geometry().height()/2,
-                                   draw_button_width, draw_button_height);
-    draw_map_button->setGeometry(draw_button_size);
-    draw_map_button->show();
+    QRect start_game_button_size = QRect(dialog->geometry().width()/2 - start_button_width/2, dialog->geometry().height()/2,
+                                   start_button_width, start_button_height);
+    start_game->setGeometry(start_game_button_size);
+    start_game->show();
+
+    connect(start_game, SIGNAL(clicked()), this, SLOT(start()));
 
     dialog->show();
 }
@@ -101,10 +111,10 @@ void MainWindow::paintEvent(QPaintEvent *event){
     bool is_ctor_running = launcher->GetCtor() && launcher->IsCtorMode();
     if (is_ctor_running){
         Constructor *ctor = launcher->GetCtor();
-        vector<Point> points = ctor->GetMap()->GetPoints();
+        vector<Point> *points = ctor->GetMap()->GetPoints();
         unsigned int cell_width = ctor->GetSettings()->GetCellWidth();
-        for (int i = 0; i < points.size(); i++){
-            QRect rect_to_draw = QRect(points[i].x * cell_width, points[i].y * cell_width, cell_width, cell_width);
+        for (int i = 0; i < points->size(); i++){
+            QRect rect_to_draw = QRect(points->at(i).x * cell_width, points->at(i).y * cell_width, cell_width, cell_width);
             painter.fillRect(rect_to_draw, painter.brush());
         }
     }
@@ -117,9 +127,12 @@ void MainWindow::mousePressEvent(QMouseEvent *event){
     }
 }
 
-void MainWindow::ProceedLogic(){
+void MainWindow::proceedLogic(){
     //procedure of class main window
     this->launcher->GetGame()->Proceed();
+}
+
+void MainWindow::windowUpdate(){
     this->update();
 }
 

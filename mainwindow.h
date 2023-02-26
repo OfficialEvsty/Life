@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "launcher.h"
 #include <QDialog>
+#include "point.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,6 +17,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     QTimer *timer;
+    QTimer *windowUpdateTimer;
     ~MainWindow();
 
 protected:
@@ -32,6 +34,8 @@ private:
     void DialogInit();
 
 private slots:
-    void ProceedLogic();
+    void proceedLogic();
+    void windowUpdate();
+    void start();
 };
 #endif // MAINWINDOW_H

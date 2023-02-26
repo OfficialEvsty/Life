@@ -1,6 +1,8 @@
 #ifndef CONSTRUCTOR_H
 #define CONSTRUCTOR_H
 #include "map.h"
+#include "point.h"
+#include "settings.h"
 
 
 class Constructor{
@@ -10,7 +12,7 @@ class Constructor{
     Constructor(Settings *sett);
 
     void addPoint(Point p);
-    void deletePoint(vector<Point>::iterator iterator);
+    void deletePoint(int index);
     bool isPointValid(Point p);
     Point convertMouseXYToCellPoint(int x, int y);
 public:
