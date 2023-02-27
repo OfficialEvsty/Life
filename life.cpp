@@ -22,6 +22,7 @@ Life::Life(Settings *settings){
         for (int j = 0; j < lengthY; j++){
             bool cell_creating_condition = rand() % 2 == 1;
             m_cells[i][j] = new Cell(0, cell_creating_condition);
+            this->populaty = (cell_creating_condition) ? ++this->populaty : this->populaty;
         }
 
     /*for (int i = 0; i < lengthX; i++)
@@ -47,8 +48,10 @@ Life::Life(Settings *settings, Map *map){
             bool cell_creating_condition = false;
             m_cells[i][j] = new Cell(0, cell_creating_condition);
             for (int k = 0; k < map->GetPoints()->size(); k++){
-                if (map->GetPoints()->at(k).x == i && map->GetPoints()->at(k).y == j)
+                if (map->GetPoints()->at(k).x == i && map->GetPoints()->at(k).y == j){
                     m_cells[i][j]->SetAlive(true);
+                    this->populaty++;
+                }
             }
         }
 
@@ -74,6 +77,14 @@ Cell*** Life::GetCells(){
 
 Settings* Life::GetSettings(){
     return this->m_settings;
+}
+
+unsigned long int Life::GetPopulaty(){
+    return this->populaty;
+}
+
+unsigned long long int Life::GetGeneration(){
+    return this->generation;
 }
 
 int Life::GetAliveCellsAround(Cell*** ref, int i, int j){
@@ -127,15 +138,19 @@ void Life::Proceed(){
             if (ptr->GetAlive()){
                 bool is_cell_died = cells_count > this->top_death_count_condition || cells_count < this->bottom_death_count_condition;
                 ptr->SetAliveStatusInNextGen(!is_cell_died);
-                if (!is_cell_died)
+                if (!is_cell_died){
                     ptr->IncreaseGen();
-                else
+                    this->generation++;
+                }
+                else{
+                    this->populaty--;
                     ptr->NullifyGen();
-
+                }
             }
             else{
                 bool is_cell_revived = cells_count == this->reviving_cell_condition;
                 ptr->SetAliveStatusInNextGen(is_cell_revived);
+                this->populaty = (is_cell_revived) ? ++this->populaty : this->populaty;
             }
 
         }

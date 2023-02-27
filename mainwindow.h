@@ -5,6 +5,7 @@
 #include "launcher.h"
 #include <QDialog>
 #include "point.h"
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,7 +30,10 @@ private:
     Launcher *launcher = nullptr;
     QDialog *dialog;
 
-    QRect dialog_geometry = QRect(900, 560, 500, 400);
+    QRect dialog_geometry = QRect(900, 560, 250, 150);
+
+    QLabel *populaty_label = new QLabel(this);
+    QLabel *generation_label = new QLabel(this);
 
     void DialogInit();
 
@@ -37,5 +41,6 @@ private slots:
     void proceedLogic();
     void windowUpdate();
     void start();
+    void freezeTimer();
 };
 #endif // MAINWINDOW_H

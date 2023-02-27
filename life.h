@@ -17,11 +17,16 @@ class Life{
     int top_death_count_condition = 3;
     int reviving_cell_condition = 3;
 
+    unsigned long int populaty = 0;
+    unsigned long long int generation = 0;
+
 public:
     static Life *Instance;
     static void Init(Settings *settings = nullptr, Map *map = nullptr);
     Cell*** GetCells();
     Settings* GetSettings();
+    unsigned long int GetPopulaty();
+    unsigned long long int GetGeneration();
     int GetAliveCellsAround(Cell*** ptr, int i, int j);
     void Proceed();
 };

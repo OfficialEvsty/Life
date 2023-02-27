@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QMouseEvent>
+#include <QLayout>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -20,6 +21,14 @@ MainWindow::MainWindow(QWidget *parent)
     setAutoFillBackground(true);
     setPalette(Pal);
 
+    QRect populaty_label_rect = QRect(0, this->geometry().height() - 50, 150, 20);
+    this->populaty_label->setGeometry(populaty_label_rect);
+    this->populaty_label->setStyleSheet("color: rgb(255, 255, 255)");
+    QRect generation_label_rect = QRect(this->geometry().width() - 150, this->geometry().height() - 50, 150, 20);
+    this->generation_label->setGeometry(generation_label_rect);
+    this->generation_label->setStyleSheet("color: rgb(255, 255, 255)");
+    this->populaty_label->show();
+    this->generation_label->show();
 
     this->windowUpdateTimer = new QTimer();
     connect(windowUpdateTimer, SIGNAL(timeout()), this, SLOT(windowUpdate()));
@@ -45,9 +54,12 @@ void MainWindow::DialogInit(){
     QFont game_font = QFont();
     game_font.setPixelSize(pixelSize);
     //button data
-    QString start_game_button_name = "Draw map";
+    QString start_game_button_name = "Start";
+    QString pause_game_button_name = "Pause";
     int start_button_width = 200;
     int start_button_height = 50;
+    int pause_button_width = 200;
+    int pause_button_height = 50;
     //dialog data
     QString dialog_title = "Life Settings";
 
@@ -55,6 +67,9 @@ void MainWindow::DialogInit(){
     dialog = new QDialog();
     dialog->setGeometry(dialog_geometry);
     dialog->setWindowTitle(dialog_title);
+
+    QVBoxLayout *dialog_layout = new QVBoxLayout();
+    dialog_layout->setSizeConstraint(QLayout::SetMaximumSize);
 
     QGroupBox *group = new QGroupBox();
     group->setParent(dialog);
@@ -71,12 +86,26 @@ void MainWindow::DialogInit(){
     QPushButton *start_game = new QPushButton(group);
     start_game->setText(start_game_button_name);
 
+    QPushButton *pause_game = new QPushButton(group);
+    pause_game->setText(pause_game_button_name);
+
+    dialog_layout->addWidget(game_label);
+    dialog_layout->addWidget(start_game, 0);
+    dialog_layout->addWidget(pause_game, 1);
+    group->setLayout(dialog_layout);
+
+    QRect pause_game_button_rect = QRect(dialog->geometry().width()/2 - start_button_width/2, dialog->geometry().height()/3,
+                                         pause_button_width, pause_button_height);
+
     QRect start_game_button_size = QRect(dialog->geometry().width()/2 - start_button_width/2, dialog->geometry().height()/2,
                                    start_button_width, start_button_height);
     start_game->setGeometry(start_game_button_size);
+    pause_game->setGeometry(pause_game_button_rect);
     start_game->show();
+    pause_game->show();
 
     connect(start_game, SIGNAL(clicked()), this, SLOT(start()));
+    connect(pause_game, SIGNAL(clicked()), this, SLOT(freezeTimer()));
 
     dialog->show();
 }
@@ -106,6 +135,8 @@ void MainWindow::paintEvent(QPaintEvent *event){
                     painter.fillRect(rect_to_draw, painter.brush());
                 }
             }
+        //this->populaty_label->setText("Populaty: " + this->launcher->GetGame()->GetPopulaty());
+        //this->generation_label->setText("Generation: " + this->launcher->GetGame()->GetGeneration());
     }
 
     bool is_ctor_running = launcher->GetCtor() && launcher->IsCtorMode();
@@ -134,6 +165,15 @@ void MainWindow::proceedLogic(){
 
 void MainWindow::windowUpdate(){
     this->update();
+}
+
+void MainWindow::freezeTimer(){
+    bool status = this->timer->isActive();
+    status = (status) ? false : true;
+    if (status)
+        this->timer->start();
+    else
+        this->timer->stop();
 }
 
 MainWindow::~MainWindow()

@@ -9,7 +9,7 @@ class Map
 
 public:
     Map();
-
+    bool IsEmpty();
     vector<Point>* GetPoints();
 };
 
